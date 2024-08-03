@@ -19,7 +19,7 @@ export class User {
   @Column({ type: 'varchar' })
   email!: string;
 
-  @Column({ type: 'varchar', select: false })
+  @Column({ type: 'varchar' })
   password!: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
