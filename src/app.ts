@@ -12,6 +12,7 @@ import signale from 'signale';
 
 import { APP_URI, NODE_ENV, PORT } from './app/constants';
 import { Users } from './controllers/userController';
+import { Organisations } from './controllers/organisationController';
 import DBConnection from './database/connection';
 import { handleServiceResponse } from './util/httpHandlers';
 import { ServiceResponse } from './util/serviceResponse';
@@ -34,7 +35,7 @@ const server = new (class extends Server {
   }
 
   private setupRoutes() {
-    this.addControllers([new Users()]);
+    this.addControllers([new Users(), new Organisations()]);
 
     this.app.get('/api', (req, res) => {
       return handleServiceResponse(

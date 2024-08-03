@@ -3,8 +3,6 @@ import { User } from '../database/models/User.entity';
 import { ServiceResponse } from '../util/serviceResponse';
 
 export class UserService {
-  public static readonly COOKIE_NAME = 'token';
-
   private static model = dataSource.getRepository(User);
 
   public static async id(id: number): Promise<ServiceResponse<User | null>> {
