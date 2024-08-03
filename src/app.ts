@@ -3,7 +3,6 @@ import 'express-async-errors';
 import 'reflect-metadata';
 
 import compression from 'compression';
-import cookies from 'cookie-parser';
 import cors from 'cors';
 import { type NextFunction, type Request, type Response, json } from 'express';
 import helmet from 'helmet';
@@ -29,7 +28,6 @@ const server = new (class extends Server {
   private setupMiddleware() {
     this.app.use(compression({ threshold: 0 }));
     this.app.use(json({ limit: '50mb' }));
-    this.app.use(cookies());
     this.app.use(helmet());
     this.app.use(cors({ origin: [APP_URI], credentials: true }));
     this.app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'short'));
