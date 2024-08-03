@@ -1,55 +1,60 @@
 import 'dotenv/config';
 import 'express-async-errors';
-
-import { Server } from '@overnightjs/core';
-
 import 'reflect-metadata';
 
 import compression from 'compression';
 import cookies from 'cookie-parser';
 import cors from 'cors';
-
 import { type NextFunction, type Request, type Response, json } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { Server } from '@overnightjs/core';
 import signale from 'signale';
+
 import { APP_URI, NODE_ENV, PORT } from './app/constants';
-
-import DBConnection from './database/connection';
 import { Users } from './controllers/userController';
+import DBConnection from './database/connection';
 import { handleServiceResponse } from './util/httpHandlers';
-
 import { ServiceResponse } from './util/serviceResponse';
 
 const server = new (class extends Server {
   public constructor() {
     super();
 
-    this.app.use(
-      compression({
-        threshold: 0,
-      })
-    );
+    this.setupMiddleware();
+    this.setupRoutes();
+    this.setupErrorHandling();
+  }
 
-    // Parse the rest of our application as json
+  private setupMiddleware() {
+    this.app.use(compression({ threshold: 0 }));
     this.app.use(json({ limit: '50mb' }));
     this.app.use(cookies());
     this.app.use(helmet());
-
-    this.app.use(
-      cors({
-        origin: [APP_URI],
-        credentials: true,
-      })
-    );
-
+    this.app.use(cors({ origin: [APP_URI], credentials: true }));
     this.app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'short'));
+  }
 
+  private setupRoutes() {
     this.addControllers([new Users()]);
 
-    // this.app.use('/', (req, res) => {
-    //   res.send('Hello World!');
-    // });
+    this.app.get('/api', (req, res) => {
+      return handleServiceResponse(
+        ServiceResponse.success(
+          'Welcome to PokeList!',
+          { serverTime: new Date().toISOString() },
+          200
+        ),
+        res
+      );
+    });
+
+    this.app.post('/', (req, res) => {
+      return handleServiceResponse(
+        ServiceResponse.failure('Invalid request method', null, 405),
+        res
+      );
+    });
 
     this.app.use('*', (_req, res) => {
       return handleServiceResponse(
@@ -58,36 +63,35 @@ const server = new (class extends Server {
       );
     });
   }
-})();
 
-server.app.use((req, res, next) => {
-  console.log(`Incoming request: ${req.method} ${req.path}`);
-  next();
-});
+  private setupErrorHandling() {
+    this.app.use((req, res, next) => {
+      console.log(`Incoming request: ${req.method} ${req.path}`);
+      next();
+    });
 
-server.app.use(
-  (error: Error, req: Request, res: Response, next: NextFunction) => {
-    signale.error(error);
-
-    const statusCode = error.statusCode || 500;
-    const serviceResponse = ServiceResponse.failure(
-      error.message,
-      null,
-      statusCode
+    this.app.use(
+      (error: Error, req: Request, res: Response, next: NextFunction) => {
+        signale.error(error);
+        const statusCode = error.statusCode || 500;
+        const serviceResponse = ServiceResponse.failure(
+          error.message,
+          null,
+          statusCode
+        );
+        handleServiceResponse(serviceResponse, res);
+        next();
+      }
     );
-
-    handleServiceResponse(serviceResponse, res);
-
-    // Call next() to pass control to the next middleware
-    next();
   }
-);
+})();
 
 DBConnection.initialize()
   .then(() => {
-    signale.success('Database connected');
+    signale.success('📀 Database connected');
     server.app.listen(PORT, () => {
-      signale.success(`Server is running on port ${PORT}`);
+      signale.success(`📱 Server is running & listening on port ${PORT}`);
+      signale.info(`🌍 Visit ${APP_URI} to see the API in action!`);
     });
   })
   .catch((error) => signale.error('Database connection error:', error));
