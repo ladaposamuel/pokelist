@@ -7,7 +7,7 @@ export class UserService {
 
   private static model = dataSource.getRepository(User);
 
-  public static async id(id: number) {
+  public static async id(id: number): Promise<ServiceResponse<User | null>> {
     const user = await this.model.findOne({
       where: { id },
       relations: ['organisation'],
@@ -16,12 +16,10 @@ export class UserService {
     if (!user) {
       throw new Error('User not found');
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
 
-    if (user.password) {
-      delete user.password;
-    }
-
-    return ServiceResponse.success<User>('User found', user);
+    return ServiceResponse.success<User>('User found', userWithoutPassword);
   }
 
   public static email(email: string) {
