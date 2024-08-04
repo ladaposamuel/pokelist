@@ -1,26 +1,35 @@
-/**
- * Safely parse environment variables
- * @param key The key
- * @param defaultValue An optional default value if the environment variable does not exist
- */
-export function validateEnv<T extends string | number>(
-  key: keyof NodeJS.ProcessEnv,
-  defaultValue?: T
-): T {
-  const value = process.env[key] as T | undefined;
+export function validateEnv<T>(key: string, defaultValue?: T): T {
+  const value = process.env[key];
 
-  if (!value) {
-    if (typeof defaultValue !== 'undefined') {
-      return defaultValue;
+  if (value === undefined || value === '') {
+    if (defaultValue === undefined) {
+      throw new Error(`${key} is not defined in environment variables`);
     }
-    throw new Error(`${key} is not defined in environment variables`);
+    return defaultValue;
   }
 
-  return value;
+  // Handle boolean values
+  if (value === 'true') {
+    return true as unknown as T;
+  }
+  if (value === 'false') {
+    return false as unknown as T;
+  }
+
+  // Handle numeric values
+  const numericValue = Number(value);
+  if (!isNaN(numericValue)) {
+    return numericValue as unknown as T;
+  }
+
+  // Fallback to string
+  return value as unknown as T;
 }
 
-// ENV
-export const JWT_SECRET = validateEnv('JWT_SECRET');
+export const JWT_SECRET = validateEnv(
+  'JWT_SECRET',
+  'whiteboardspeakershoemanmaker'
+);
 export const NODE_ENV = validateEnv<'development' | 'production'>(
   'NODE_ENV',
   'production'
