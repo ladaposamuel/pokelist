@@ -37,16 +37,16 @@ export const isAuthenticated = (
 };
 
 export const jwt = {
-  verify(token: string): string | null {
+  verify(token: string): number | null {
     try {
-      const verified = jsonwebtoken.verify(token, JWT_SECRET);
-      return verified.id;
+      const verified = jsonwebtoken.verify(token, JWT_SECRET.toString());
+      return (verified as { id: number }).id;
     } catch (e) {
       throw new Error(`Invalid token: ${e}`);
     }
   },
   sign(id: string): string {
-    return jsonwebtoken.sign({ id }, JWT_SECRET, {
+    return jsonwebtoken.sign({ id }, JWT_SECRET.toString(), {
       expiresIn: '168h',
     });
   },

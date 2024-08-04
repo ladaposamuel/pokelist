@@ -12,12 +12,18 @@ export class UserService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      return ServiceResponse.failure('User not found', null, 404);
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
 
-    return ServiceResponse.success<User>('User found', userWithoutPassword);
+    const userWithoutPasswordInstance = new User();
+    Object.assign(userWithoutPasswordInstance, userWithoutPassword);
+
+    return ServiceResponse.success<User>(
+      'User found',
+      userWithoutPasswordInstance
+    );
   }
 
   public static email(email: string) {

@@ -11,16 +11,16 @@ Create a web application that lists Pokemon in a table with pagination, allowing
 
 **Backend: Node.js app with database (up to you to decide the framework and database)**
 
-- Project Initialization:
+- Project Initialization: ✅
   - Set up a new Node.js project.
   - Design a database schema with tables for organizations, users, pokemons and favorites.
-- Data Generation Script:
+- Data Generation Script: ✅
   - Write a script to generate up to 10 random organizations.
   - Generate up to 10 random users for each organization.
 - API Integration:
   - Fetch Pokémon data from the PokéAPI and import it into the database.
   - Assign Pokémon to organizations randomly.
-- User Authentication and Management:
+- User Authentication and Management: ✅
   - Add user registration with the ability to select an organization from a dropdown.
   - Add user login.
 

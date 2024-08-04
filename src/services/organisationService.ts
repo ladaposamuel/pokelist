@@ -31,12 +31,10 @@ export class OrganisationService {
     if (!organisation) {
       throw new Error('Organisation not found');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...organisationWithoutPassword } = organisation;
 
     return ServiceResponse.success<Organisation>(
       'Organisation found',
-      organisationWithoutPassword
+      organisation
     );
   }
 }

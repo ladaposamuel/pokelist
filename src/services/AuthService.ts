@@ -45,7 +45,7 @@ export class AuthService {
 
     await this.model.save(newUser);
 
-    const token = jwt.sign(newUser.id);
+    const token = jwt.sign(newUser.id.toString());
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: userPassword, ...userWithoutPassword } = newUser;
@@ -76,9 +76,8 @@ export class AuthService {
       return ServiceResponse.failure('Invalid credentials', null, 401);
     }
 
-    const token = jwt.sign(user.id);
+    const token = jwt.sign(user.id.toString());
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: userPassword, ...userWithoutPassword } = user;
     return ServiceResponse.success('Login successful', {
       ...userWithoutPassword,

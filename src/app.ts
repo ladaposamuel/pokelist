@@ -72,7 +72,7 @@ const server = new (class extends Server {
     this.app.use(
       (error: Error, req: Request, res: Response, next: NextFunction) => {
         signale.error(error);
-        const statusCode = error.statusCode || 500;
+        const statusCode = (error as any).statusCode || 500;
         const serviceResponse = ServiceResponse.failure(
           error.message,
           null,
