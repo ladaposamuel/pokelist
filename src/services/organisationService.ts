@@ -1,18 +1,25 @@
 import dataSource from '../database/connection';
 import { Organisation } from '../database/models/Organisation.entity';
 import { ServiceResponse } from '../util/serviceResponse';
+import { Pokemon } from '../database/models/Pokemon.entity';
 
 export class OrganisationService {
   private static model = dataSource.getRepository(Organisation);
 
   public static async all(): Promise<ServiceResponse<Organisation[] | null>> {
     const organisations = await this.model.find({
-      relations: ['pokemons'],
+      relations: ['pokemons', 'pokemons.favorites', 'pokemons.favorites.user'],
     });
 
     if (!organisations) {
       throw new Error('Organisations not found');
     }
+
+    organisations.forEach((organisation) => {
+      organisation.pokemons = organisation.pokemons.map((pokemon) =>
+        this.processPokemon(pokemon)
+      );
+    });
 
     return ServiceResponse.success<Organisation[]>(
       'All organisations',
@@ -25,16 +32,37 @@ export class OrganisationService {
   ): Promise<ServiceResponse<Organisation | null>> {
     const organisation = await this.model.findOne({
       where: { id },
-      relations: ['pokemons'],
+      relations: ['pokemons', 'pokemons.favorites', 'pokemons.favorites.user'],
     });
 
     if (!organisation) {
       throw new Error('Organisation not found');
     }
 
+    organisation.pokemons = organisation.pokemons.map((pokemon) =>
+      this.processPokemon(pokemon)
+    );
+
     return ServiceResponse.success<Organisation>(
       'Organisation found',
       organisation
     );
+  }
+
+  private static processPokemon(pokemon: Pokemon): Pokemon {
+    const likes = pokemon.favorites.filter((favorite) => favorite.liked).length;
+    const dislikes = pokemon.favorites.filter(
+      (favorite) => !favorite.liked
+    ).length;
+
+    return {
+      ...pokemon,
+      likes,
+      dislikes,
+      favorites: pokemon.favorites.map((favorite) => ({
+        liked: favorite.liked,
+        userId: favorite.user.id,
+      })),
+    };
   }
 }

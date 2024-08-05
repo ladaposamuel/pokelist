@@ -10,9 +10,10 @@ import morgan from 'morgan';
 import { Server } from '@overnightjs/core';
 import signale from 'signale';
 
-import { APP_URI, NODE_ENV, PORT } from './app/constants';
+import { APP_URI, NODE_ENV, PORT, FRONTEND_URI } from './app/constants';
 import { Users } from './controllers/userController';
 import { Organisations } from './controllers/organisationController';
+import { Pokemon } from './controllers/pokemonController';
 import DBConnection from './database/connection';
 import { handleServiceResponse } from './util/httpHandlers';
 import { ServiceResponse } from './util/serviceResponse';
@@ -30,12 +31,12 @@ const server = new (class extends Server {
     this.app.use(compression({ threshold: 0 }));
     this.app.use(json({ limit: '50mb' }));
     this.app.use(helmet());
-    this.app.use(cors({ origin: [APP_URI], credentials: true }));
+    this.app.use(cors({ origin: [APP_URI, FRONTEND_URI], credentials: true }));
     this.app.use(morgan(NODE_ENV === 'development' ? 'dev' : 'short'));
   }
 
   private setupRoutes() {
-    this.addControllers([new Users(), new Organisations()]);
+    this.addControllers([new Users(), new Organisations(), new Pokemon()]);
 
     this.app.get('/api', (req, res) => {
       return handleServiceResponse(

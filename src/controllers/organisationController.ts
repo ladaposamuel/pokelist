@@ -9,8 +9,7 @@ import { ServiceResponse } from '../util/serviceResponse';
 @Controller('api/organisations')
 export class Organisations {
   @Get('')
-  @Middleware([isAuthenticated])
-  public async me(req: Request, res: Response) {
+  public async allOrganisations(req: Request, res: Response) {
     const allOrganisations = await OrganisationService.all();
 
     if (!allOrganisations) {

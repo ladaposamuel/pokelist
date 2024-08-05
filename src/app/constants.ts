@@ -44,3 +44,8 @@ export const DB_PORT = validateEnv<number>('DB_PORT', 5432);
 export const DB_USER = validateEnv('DB_USER', 'postgres');
 export const DB_PASSWORD = validateEnv('DB_PASSWORD', 'root');
 export const DB_NAME = validateEnv('DB_NAME', 'pokelist');
+
+export const FRONTEND_URI = validateEnv(
+  'FRONTEND_URI',
+  'http://localhost:3001'
+);
