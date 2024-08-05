@@ -2,7 +2,13 @@ import dataSource from '../database/connection';
 import { Organisation } from '../database/models/Organisation.entity';
 import { ServiceResponse } from '../util/serviceResponse';
 import { Pokemon } from '../database/models/Pokemon.entity';
+import { plainToInstance } from 'class-transformer';
+import { Favorite } from '../database/models/Favorite.entity';
 
+interface PokemonWithStats extends Pokemon {
+  likes: number;
+  dislikes: number;
+}
 export class OrganisationService {
   private static model = dataSource.getRepository(Organisation);
 
@@ -49,7 +55,7 @@ export class OrganisationService {
     );
   }
 
-  private static processPokemon(pokemon: Pokemon): Pokemon {
+  private static processPokemon(pokemon: Pokemon): PokemonWithStats {
     const likes = pokemon.favorites.filter((favorite) => favorite.liked).length;
     const dislikes = pokemon.favorites.filter(
       (favorite) => !favorite.liked
@@ -59,10 +65,13 @@ export class OrganisationService {
       ...pokemon,
       likes,
       dislikes,
-      favorites: pokemon.favorites.map((favorite) => ({
-        liked: favorite.liked,
-        userId: favorite.user.id,
-      })),
+      favorites: pokemon.favorites.map((favorite) => {
+        const favoriteData = {
+          liked: favorite.liked,
+          userId: favorite.user.id,
+        };
+        return plainToInstance(Favorite, favoriteData);
+      }),
     };
   }
 }

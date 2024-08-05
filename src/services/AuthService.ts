@@ -78,6 +78,7 @@ export class AuthService {
 
     const token = jwt.sign(user.id.toString());
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: userPassword, ...userWithoutPassword } = user;
     return ServiceResponse.success('Login successful', {
       ...userWithoutPassword,
