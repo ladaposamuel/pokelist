@@ -2,10 +2,10 @@ import { setSeederFactory } from 'typeorm-extension';
 import { Pokemon } from '../models/Pokemon.entity';
 import axios from 'axios';
 
-const POKEAPI_BASE_URL = 'https://pokeapi.co/api/v2';
+import { POKEAPI_BASE_URL } from '../../app/constants';
 
-export default setSeederFactory(Pokemon, async (faker) => {
-  const pokemonId = faker.number.int({ min: 1, max: 898 });
+export default setSeederFactory(Pokemon, async () => {
+  const pokemonId = Math.floor(Math.random() * 200) + 1;
 
   try {
     const response = await axios.get(
@@ -25,17 +25,6 @@ export default setSeederFactory(Pokemon, async (faker) => {
     return pokemon;
   } catch (error) {
     console.error(`Error fetching Pokémon data for ID ${pokemonId}:`, error);
-    // Fallback: return a Pokemon entity with fake data if the API call fails
-    const fallbackPokemon = new Pokemon();
-    fallbackPokemon.name = faker.animal.type();
-    fallbackPokemon.description = faker.lorem.sentence();
-    fallbackPokemon.image = faker.image.avatar();
-    fallbackPokemon.type = faker.helpers.arrayElement([
-      'fire',
-      'water',
-      'grass',
-      'electric',
-    ]);
-    return fallbackPokemon;
+    throw error; // Rethrow the error to prevent the factory from creating an entity
   }
 });
