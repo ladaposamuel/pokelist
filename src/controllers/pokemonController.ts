@@ -1,10 +1,11 @@
-import { Controller, Post, Middleware } from '@overnightjs/core';
+import { Controller, Post, Get, Middleware } from '@overnightjs/core';
 import type { Request, Response } from 'express';
 
 import { type IJwt, isAuthenticated } from '../middleware/auth';
 import { PokemonService } from '../services/pokemonService';
 import { handleServiceResponse } from '../util/httpHandlers';
 import { ServiceResponse } from '../util/serviceResponse';
+import { OrganisationService } from '../services/organisationService';
 
 @Controller('api/pokemon')
 export class Pokemon {
@@ -38,5 +39,23 @@ export class Pokemon {
     }
 
     return handleServiceResponse(pokemon, res);
+  }
+
+  @Get('all')
+  @Middleware([isAuthenticated])
+  public async pokemons(req: Request, res: Response) {
+    const auth = res.locals.auth as IJwt;
+    const userId = auth.userId;
+
+    const pokemons = await OrganisationService.getPokemonsForUser(userId);
+
+    if (!pokemons) {
+      return handleServiceResponse(
+        ServiceResponse.failure('pokemons.error', null),
+        res
+      );
+    }
+
+    return handleServiceResponse(pokemons, res);
   }
 }

@@ -64,7 +64,11 @@ export class AuthService {
   }): Promise<
     ServiceResponse<(Omit<User, 'password'> & { token: string }) | null>
   > {
-    const user = await this.model.findOne({ where: { email } });
+    const user = await this.model.findOne({
+      where: { email },
+      relations: ['organisation'],
+      select: ['id', 'email', 'password'],
+    });
 
     if (!user) {
       return ServiceResponse.failure('Invalid credentials', null, 401);

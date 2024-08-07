@@ -2,30 +2,29 @@ import dataSource from '../database/connection';
 import { Organisation } from '../database/models/Organisation.entity';
 import { ServiceResponse } from '../util/serviceResponse';
 import { Pokemon } from '../database/models/Pokemon.entity';
-import { plainToInstance } from 'class-transformer';
-import { Favorite } from '../database/models/Favorite.entity';
+import { User } from '../database/models/User.entity';
 
 interface PokemonWithStats extends Pokemon {
   likes: number;
   dislikes: number;
 }
+
 export class OrganisationService {
   private static model = dataSource.getRepository(Organisation);
+  private static userModel = dataSource.getRepository(User);
 
+  /**
+   * Get all organisations
+   * @returns \ServiceResponse<Organisation[] | null>
+   */
   public static async all(): Promise<ServiceResponse<Organisation[] | null>> {
     const organisations = await this.model.find({
-      relations: ['pokemons', 'pokemons.favorites', 'pokemons.favorites.user'],
+      relations: ['pokemons'],
     });
 
     if (!organisations) {
       throw new Error('Organisations not found');
     }
-
-    organisations.forEach((organisation) => {
-      organisation.pokemons = organisation.pokemons.map((pokemon) =>
-        this.processPokemon(pokemon)
-      );
-    });
 
     return ServiceResponse.success<Organisation[]>(
       'All organisations',
@@ -33,21 +32,22 @@ export class OrganisationService {
     );
   }
 
+  /**
+   * Get organisation by id
+   * @param id \ServiceResponse<Organisation | null>
+   * @returns
+   */
   public static async id(
     id: number
   ): Promise<ServiceResponse<Organisation | null>> {
     const organisation = await this.model.findOne({
       where: { id },
-      relations: ['pokemons', 'pokemons.favorites', 'pokemons.favorites.user'],
+      relations: ['pokemons'],
     });
 
     if (!organisation) {
       throw new Error('Organisation not found');
     }
-
-    organisation.pokemons = organisation.pokemons.map((pokemon) =>
-      this.processPokemon(pokemon)
-    );
 
     return ServiceResponse.success<Organisation>(
       'Organisation found',
@@ -55,23 +55,48 @@ export class OrganisationService {
     );
   }
 
-  private static processPokemon(pokemon: Pokemon): PokemonWithStats {
-    const likes = pokemon.favorites.filter((favorite) => favorite.liked).length;
-    const dislikes = pokemon.favorites.filter(
-      (favorite) => !favorite.liked
-    ).length;
+  /**
+   * Get pokemons assigned to an organisation for a user
+   * @param userId User Id
+   * @returns
+   */
+  public static async getPokemonsForUser(
+    userId: number
+  ): Promise<ServiceResponse<PokemonWithStats[] | null>> {
+    const user = await this.userModel.findOne({
+      where: { id: userId },
+      relations: ['organisation', 'favorites', 'favorites.pokemon'],
+    });
 
-    return {
-      ...pokemon,
-      likes,
-      dislikes,
-      favorites: pokemon.favorites.map((favorite) => {
-        const favoriteData = {
-          liked: favorite.liked,
-          userId: favorite.user.id,
-        };
-        return plainToInstance(Favorite, favoriteData);
-      }),
-    };
+    if (!user || !user.organisation) {
+      return ServiceResponse.failure(
+        'User or organisation not found',
+        null,
+        404
+      );
+    }
+
+    const organisationPokemons = await this.model.findOne({
+      where: { id: user.organisation.id },
+      relations: ['pokemons', 'pokemons.favorites', 'pokemons.favorites.user'],
+    });
+
+    if (!organisationPokemons) {
+      return ServiceResponse.failure(
+        'Could not find organisation pokemons',
+        null
+      );
+    }
+
+    const pokemonsWithStats = organisationPokemons.pokemons.map((pokemon) => {
+      const likes = pokemon.favorites.filter((fav) => fav.liked).length;
+      const dislikes = pokemon.favorites.filter((fav) => !fav.liked).length;
+      return { ...pokemon, likes, dislikes };
+    });
+
+    return ServiceResponse.success(
+      'Pokemons fetched successfully',
+      pokemonsWithStats
+    );
   }
 }

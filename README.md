@@ -37,7 +37,7 @@ Create a web application that lists Pokemon in a table with pagination, allowing
   - Implement buttons to like/unlike Pokémon for logged-in users.  
   - Implement table pagination.
 - User Interaction:✅
-  - Implement feature for likes/dislikes. 
+  - Implement feature for likes/dislikes.
 
 > Please ensure that you set up the project as you would for a production application. Pay careful attention to security, error handling, and seamless communication, as these aspects will be reviewed in detail.
 
@@ -97,6 +97,20 @@ The database schema and relationship is Users, Organizations, Pokemons, Favorite
 ![Screenshot 2024-08-05 at 9 34 31 PM](
   https://imgur.com/bokLtZl.png
 )
+
+### Routes
+
+List of the routes in the API
+
+| Route Name           | Route                 | Description                                                   | Sample Request | Sample Response |
+|----------------------|-----------------------|---------------------------------------------------------------|----------------|-----------------|
+| Login                | /user/login           | User Login                                                    |                |                 |
+| Register             | /user/register        | User Signup                                                   |                |                 |
+| User Profile         | /user/me              | Show user's details                                           |                |                 |
+| Get all Organisation | /organisations        | List all orgs with their pokemons                             |                |                 |
+| Get an Organisation  | /organisations/:id    |                                                               |                |                 |
+| Get Pokemons         | /pokemon/all          | Get all pokemons in an org by using user Id in the auth token |                |                 |
+| Favorite a pokemon   | /pokemon/favorite/:id | Favorite a pokemon using it's ID                              |                |                 |
 
 #### Takeaways
 

@@ -63,7 +63,9 @@ export class PokemonService {
 
     if (!user) throw new Error('User not found');
 
-    const favorite = pokemon.favorites.find((fav) => fav.user.id === userId);
+    const favorite = pokemon.favorites.find(
+      (fav) => fav.user.id === Number(userId)
+    );
 
     if (favorite) {
       favorite.liked = !favorite.liked;
@@ -79,7 +81,7 @@ export class PokemonService {
     }
 
     return ServiceResponse.success('Favorite updated', {
-      liked: favorite?.liked ?? true,
+      liked: favorite ? !favorite.liked : true,
     });
   }
 }

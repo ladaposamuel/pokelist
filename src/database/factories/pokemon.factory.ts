@@ -13,7 +13,6 @@ export default setSeederFactory(Pokemon, async () => {
     );
     const pokemonData = response.data;
 
-    // Create a new Pokemon entity
     const pokemon = new Pokemon();
     pokemon.name = pokemonData.name;
     pokemon.description = `A Pokémon named ${pokemon.name} - ${pokemonData.types[0].type.name} type, and is ${pokemonData.height}m tall and weighs ${pokemonData.weight}kg.`;
@@ -25,6 +24,6 @@ export default setSeederFactory(Pokemon, async () => {
     return pokemon;
   } catch (error) {
     console.error(`Error fetching Pokémon data for ID ${pokemonId}:`, error);
-    throw error; // Rethrow the error to prevent the factory from creating an entity
+    throw error;
   }
 });

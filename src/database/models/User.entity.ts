@@ -5,7 +5,6 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 
 import { Organisation } from './Organisation.entity';
 import { Favorite } from './Favorite.entity';
@@ -21,8 +20,7 @@ export class User {
   @Column({ type: 'varchar' })
   email!: string;
 
-  @Column({ type: 'varchar' })
-  @Exclude()
+  @Column({ type: 'varchar', select: false })
   password!: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
