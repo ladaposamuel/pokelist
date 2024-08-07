@@ -49,3 +49,8 @@ export const FRONTEND_URI = validateEnv(
   'FRONTEND_URI',
   'http://localhost:3001'
 );
+
+export const POKEAPI_BASE_URL = validateEnv(
+  'POKEAPI_BASE_URL',
+  'https://pokeapi.co/api/v2'
+);
