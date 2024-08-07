@@ -10,7 +10,7 @@
 		"build": "tsc  -p tsconfig.json",
 		"lint": "eslint \"src/**/*.{ts,js}\" --fix --max-warnings=0",
 		"fetch-pokemon": "npx tsx ./src/cli/pokemonFetcher.ts",
-		"typeorm:generate": "rm -rf src/database/migrations && npx ts-node ./node_modules/typeorm/cli.js migration:generate ./src/database/migrations/CreateTables -d ./src/database/connection.ts",
+		"typeorm:generate": " npx ts-node ./node_modules/typeorm/cli.js migration:generate ./src/database/migrations/CreateTables -d ./src/database/connection.ts",
 		"typeorm:migrate": "npx ts-node ./node_modules/typeorm/cli.js migration:run -d src/database/connection.ts",
 		"typeorm:fresh": "yarn typeorm:drop && yarn typeorm:migrate && yarn typeorm:seed",
 		"typeorm:drop": "npx ts-node ./node_modules/typeorm/cli.js schema:drop -d src/database/connection.ts",
