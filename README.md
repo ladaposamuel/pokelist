@@ -8,8 +8,6 @@ Frontend: 10 Hours <https://wakatime.com/@electrode/projects/jbfenruwvx?start=20
 Backend: 19 Hours <https://wakatime.com/@electrode/projects/rssrypkyfc?start=2024-08-01&end=2024-08-07>
 
 <details>
-  <summary>Assignment From <a href="https://docs.google.com/document/d/1LOb51__xqFaE7U7xK4cfat6fM4zY8lhVDj7CkD8qxy0/edit#heading=h.8uldosyqpvfb">Google Docs</a></summary>
-  
 ### Overview
 
 Create a web application that lists Pokemon in a table with pagination, allowing users to like or dislike them if they are logged in. The application will involve multiple organizations, each having multiple users and Pokémon. Users will only see Pokémon that belong to their organization.
