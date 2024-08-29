@@ -7,44 +7,12 @@ Frontend: 10 Hours <https://wakatime.com/@electrode/projects/jbfenruwvx?start=20
 
 Backend: 19 Hours <https://wakatime.com/@electrode/projects/rssrypkyfc?start=2024-08-01&end=2024-08-07>
 
-<details>
-### Overview
+
+## Overview
 
 Create a web application that lists Pokemon in a table with pagination, allowing users to like or dislike them if they are logged in. The application will involve multiple organizations, each having multiple users and Pokémon. Users will only see Pokémon that belong to their organization.
 
-**Backend: Node.js app with database (up to you to decide the framework and database)**
 
-- Project Initialization: ✅
-  - Set up a new Node.js project.
-  - Design a database schema with tables for organizations, users, pokemons and favorites.
-- Data Generation Script: ✅
-  - Write a script to generate up to 10 random organizations.
-  - Generate up to 10 random users for each organization.
-- API Integration: ✅
-  - Fetch Pokémon data from the PokéAPI and import it into the database.
-  - Assign Pokémon to organizations randomly.
-- User Authentication and Management: ✅
-  - Add user registration with the ability to select an organization from a dropdown.
-  - Add user login.
-
-**Frontend: Svelte/React/SolidJS**
-
-- Project Setup: ✅
-  - Initialize the front-end project using your chosen framework (Svelte, React, or SolidJS).
-- User Interface: ✅
-  - Create auth pages.
-  - Allow users to select their organization during registration, email and password fields (email verification can be omitted).
-  - Design a basic page to display pokemon data in a table format, based on user’s organization. Users can only see pokemons from their organization. ✅
-  - Implement buttons to like/unlike Pokémon for logged-in users.  
-  - Implement table pagination.
-- User Interaction:✅
-  - Implement feature for likes/dislikes.
-
-> Please ensure that you set up the project as you would for a production application. Pay careful attention to security, error handling, and seamless communication, as these aspects will be reviewed in detail.
-
-</details>
-
-## Getting Started
 
 ### Prerequisites
 
